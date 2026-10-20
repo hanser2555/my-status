@@ -6,6 +6,7 @@
 
 > 想把它搬到腾讯云，让手机/平板在外面也能直接上报：见 [腾讯云部署指南](docs/tencent-cloud.md)。云上部署需要把 `localPc` 设为 `false`，并在 Windows 上运行 PC Agent。
 
+> **GitHub 版本说明**：仓库中已移除真实令牌、服务器 IP、个人日程和设备数据。首次运行请把 `config.example.json` 复制为 `config.json`，并修改 `token`；APK 需要用 `android/build.ps1` 自行构建，生成 `dist/我的状态.apk`。
 ![状态卡预览](dist/preview-demo.png)
 
 > 上面的预览使用了演示设备数据和示例日程，用来展示完整排版；安装 APK 后会自动替换成你的真实设备数据。`dist/status.png` 始终是最新一次真实状态。
