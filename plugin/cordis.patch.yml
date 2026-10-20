@@ -5,4 +5,5 @@
         serverUrl: http://YOUR_SERVER_IP
         token: CHANGE_ME_TOKEN
         autoStart: false
+        triggerName: hanser
         serverScript: C:/path/to/my-status/server/server.js

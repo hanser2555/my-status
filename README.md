@@ -11,6 +11,18 @@
 
 > 上面的预览使用了演示设备数据和示例日程，用来展示完整排版；安装 APK 后会自动替换成你的真实设备数据。`dist/status.png` 始终是最新一次真实状态。
 
+## 自定义口令
+
+默认口令是 **查hanser**。在 DSH profile 的 `xiaotian-status` 配置里改 `triggerName` 即可：
+
+```yaml
+- id: xiaotian-status
+  name: '@local/xiaotian-status'
+  config:
+    triggerName: 小明
+```
+
+改后口令变成 **查小明**，工具名仍然是 `chahanser`，不需要改代码。修改后重载插件或重启 DSH。
 ---
 
 ## 1. 它是怎么工作的

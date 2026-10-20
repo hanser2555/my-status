@@ -10,6 +10,7 @@ const DEFAULTS = {
   serverUrl: 'http://YOUR_SERVER_IP',
   token: 'CHANGE_ME_TOKEN',
   autoStart: false,
+  triggerName: 'hanser',
   serverScript: 'C:/path/to/my-status/server/server.js',
 };
 
@@ -21,6 +22,8 @@ export function apply(ctx, rawConfig = {}) {
     token: DEFAULTS.token,
     autoStart: false,
   };
+  const triggerName = String(config.triggerName ?? 'hanser').trim() || 'hanser';
+  const trigger = `查${triggerName}`;
   const base = String(config.serverUrl).replace(/\/+$/, '');
   let starting = null;
 
@@ -94,19 +97,19 @@ export function apply(ctx, rawConfig = {}) {
     interpolate: false,
     text: [
       '<hanser-status>',
-      '“查hanser”是用户给自己状态卡设置的快捷口令。',
-      '当用户只发送“查hanser”“查一下hanser”“hanser在干嘛”，或明确要求查看 hanser 当前在做什么、手机/平板/电脑/手表状态时：',
+      `“${trigger}”是用户给自己状态卡设置的快捷口令。`,
+      `当用户只发送“${trigger}”“查一下${triggerName}”“${triggerName}在干嘛”，或明确要求查看 ${triggerName} 当前在做什么、手机/平板/电脑/手表状态时：`,
       '- 必须调用 chahanser 工具，不要先追问，也不要只用文字回答。',
       '- 工具会返回一张已经排版好的状态卡图片。回复时用 1–2 句话概括推断结果，并保留图片。',
       '- 如果工具报错，告诉用户状态服务没有启动，并给出启动命令。',
-      '与 hanser 状态无关的请求不要调用此工具。',
+      `与 ${triggerName} 状态无关的请求不要调用此工具。`,
       '</hanser-status>',
     ].join('\n'),
   }), 'xiaotian-status: trigger');
 
   ctx.effect(() => ctx.tools.register({
     name: 'chahanser',
-    description: '查询 hanser 现在的手机、平板、电脑、手表状态，推断当前正在做什么，并生成一张可直接分享的状态卡片。用户发送“查hanser”时必须调用。',
+    description: `查询 ${triggerName} 现在的手机、平板、电脑、手表状态，推断当前正在做什么，并生成一张可直接分享的状态卡片。用户发送“${trigger}”时必须调用。`,
     parameters: {
       type: 'object',
       properties: {
@@ -152,7 +155,7 @@ export function apply(ctx, rawConfig = {}) {
         return blocks;
       },
     },
-    presentCall: () => ({ card: 'generic', title: '查hanser', kind: 'fetch' }),
+    presentCall: () => ({ card: 'generic', title: trigger, kind: 'fetch' }),
     timeoutMs: 100_000,
     isConcurrencySafe: () => false,
     execute: async (args) => {
