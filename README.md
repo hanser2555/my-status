@@ -20,14 +20,11 @@
   name: '@local/my-status'
   config:
     triggerName: 小明
-```
-
 改后口令变成 **查小明**，工具名仍然是 `chahanser`，不需要改代码。修改后重载插件或重启 DSH。
 ---
 
 ## 1. 它是怎么工作的
 
-```
 Android 手机 / 平板 ─┐
 OPPO Watch ─ BLE ────┤   HTTP POST /api/report        ┌─ 电脑采集器（前台窗口 / 电量 / 键鼠）
                      ├───────────────────────────────► │
@@ -41,8 +38,6 @@ Health Connect / 自动化广播 ─┘    本机 Node 服务        └─ 天�
                                                           │
                                                           ▼
                                       DSH「查hanser」工具 / 手机浏览器
-```
-
 - 所有数据只保存在这台电脑的 `data/` 目录里。
 - 手机与电脑需要在同一个 Wi-Fi / 局域网。
 - 服务默认监听 `0.0.0.0:17890`，用令牌保护。外网无法直接访问，除非你自己做端口映射。
@@ -56,29 +51,20 @@ Health Connect / 自动化广播 ─┘    本机 Node 服务        └─ 天�
 ```powershell
 cd C:\path\to\my-status
 .\start.ps1
-```
-
 看到 `我的状态服务已启动` 即可。也可以直接：
 
 ```powershell
 node server/server.js
-```
-
 想开机自动启动：
 
 ```powershell
 .\install-autostart.ps1
 # 取消：.\install-autostart.ps1 -Remove
-```
-
 ### 第二步：给手机 / 平板安装 APK
 
 APK 位置：
 
-```
 dist\我的状态.apk
-```
-
 安装方式任选：
 
 - 把 APK 发到手机（微信文件传输 / 数据线 / 网盘），点击安装；
@@ -86,8 +72,6 @@ dist\我的状态.apk
 
 ```powershell
 adb install -r dist\我的状态.apk
-```
-
 打开 App 后填写：
 
 | 字段 | 手机 | 平板 |
@@ -114,18 +98,12 @@ adb install -r dist\我的状态.apk
 
 直接发送默认口令：
 
-```
 查hanser
-```
-
 DSH 会调用 `chahanser` 工具，返回推断结果 + 状态卡图片。
 
 如果只是想在手机浏览器里看：
 
-```
 http://192.168.1.100:17890/?token=CHANGE_ME_TOKEN
-```
-
 页面每 60 秒自动刷新。
 
 ---
@@ -155,8 +133,6 @@ adb shell am broadcast \
   -a com.kayi.mystatus.HEALTH \
   --es token CHANGE_ME_TOKEN \
   --ei hr 72 --ei spo2 98 --ei battery 76
-```
-
 收到广播后，App 会更新手表卡片并立即上报。`battery` 可省略。
 
 ### C. HTTP 直推
@@ -169,16 +145,12 @@ x-xt-token: CHANGE_ME_TOKEN
 Content-Type: application/json
 
 {"hr":72,"spo2":98,"battery":76,"source":"OPPO Health"}
-```
-
 这条路径完全不经过手机 App，适合用 Tasker / MacroDroid / 快捷指令读取 OPPO 健康通知后转发；`battery` 可省略。收到后会自动生成/更新手表卡片。
 
 电脑上也可以直接用脚本测试或手动补数据：
 
 ```powershell
 .\scripts\push-health.ps1 -Hr 72 -Spo2 98 -Battery 76
-```
-
 MacroDroid 的做法：
 
 1. 新建宏，触发选“定时器 / 间隔”或“收到通知”（选择 OPPO 健康）。
@@ -197,8 +169,6 @@ OPPO Watch 4 Pro 在 `dumpsys bluetooth_manager` 里是经典蓝牙 HEADSET/SPP 
 ```powershell
 # 手机解锁、USB 调试已授权、OPPO 健康已登录并连着手表
 .\scripts\sync-oppo-health.ps1
-```
-
 脚本会：
 
 1. 打开 OPPO 健康；
@@ -224,16 +194,12 @@ OPPO Watch 4 Pro（OWW221，Android 11）可以通过 ADB 安装同一个 APK。
 ```text
 手表 APK  → 电量 / 在线 / 网络状态
 手机 ADB  → OPPO 健康里的心率 / 血氧 / 步数
-```
-
 也可以走 Wi-Fi 无线 ADB，不需要插线：
 
 ```powershell
 adb tcpip 5555
 adb connect 192.168.1.101:5555
 .\scripts\sync-oppo-health.ps1 -Serial 192.168.1.101:5555
-```
-
 手机重启或切换 Wi-Fi 后，重新执行 `adb connect`。不用时可以用 `adb usb` 关闭 TCP 调试端口。
 
 ---
@@ -253,17 +219,12 @@ serverUrl: http://127.0.0.1:17890
 token: CHANGE_ME_TOKEN
 autoStart: true
 serverScript: C:/Users/.../my-status/server/server.js
-```
-
 `autoStart: true` 表示 DSH 发现服务没启动时会自动拉起 Node 服务。
 
 重新安装插件（修改插件代码后）：
 
-```
 plugin_manager install_bundle
 target: C:\path\to\my-status\plugin
-```
-
 ---
 
 ## 5. 电脑端状态
@@ -303,8 +264,6 @@ target: C:\path\to\my-status\plugin
     "location": "Kilburn 1.8"
   }
 ]
-```
-
 - `day`: 1=周一 … 7=周日；也可以写 `days: [1,3,5]`。
 - 当前时间落在某节课内，会优先推断为“上课”，置信度 90% 左右。
 - 没有日程时显示“今天没有排课或日程 / 自由时间”。
@@ -327,8 +286,6 @@ node scripts/demo.js
 
 # 只启动服务
 node server/server.js
-```
-
 开发调试接口：
 
 | 方法 | 路径 | 说明 |
@@ -359,7 +316,6 @@ node server/server.js
 
 ## 9. 目录结构
 
-```
 my-status/
 ├─ server/
 │  ├─ server.js              HTTP 服务 + 路由
@@ -383,8 +339,6 @@ my-status/
 │  └─ status.png             最新状态卡
 ├─ config.json              端口、令牌、日程、时区
 └─ start.ps1                 启动服务
-```
-
 ---
 
 ## 10. 已知限制
@@ -395,4 +349,103 @@ my-status/
 - 平板需要单独装 APK 并把设备 ID 改为 `tablet`，否则会和手机互相覆盖。
 - 图片里的位置是 IP 属地（城市级），不是 GPS 精确定位。
 - 日程需要手动写进 `config.json`；没有接学校课表系统。
-```
+---
+
+## 11. 别人使用时可能遇到的 Bug 与解决
+
+### 11.1 服务启动失败
+
+| 现象 | 原因 | 解决 |
+|---|---|---|
+| `EADDRINUSE` | 17890 被占用 | 改 `config.json` 的 `port`，同时改 App / PC Agent / 插件地址 |
+| 双击 `start.ps1` 一闪而过 | PowerShell 执行策略 | 用 `powershell -ExecutionPolicy Bypass -File start.ps1` |
+| `node` 不是内部命令 | 未装 Node 或 PATH 未生效 | 安装 Node.js 22+，重开终端 |
+| 启动后立刻退出 | `config.json` JSON 写错 | 用 JSON 校验器检查；恢复备份 |
+
+### 11.2 页面 401 / 403
+
+- 局域网访问必须带 `?token=`，不能只打开 `http://电脑IP:17890`。
+- 改过 `config.json` 的 `token` 后，手机、平板、PC Agent、DSH 插件都要同步改。
+- 反向代理如果改写了 `Authorization` 或查询串，令牌会丢失。
+- 不要把 `token` 放在公开网页、截图或 GitHub 仓库里。
+
+### 11.3 手机 / 平板显示“未连接”或前台应用不对
+
+- App 里地址必须是完整地址，例如 `http://192.168.1.100:17890`，不能只填 IP。
+- 手机和电脑要在同一 Wi-Fi；电脑防火墙要放行 17890。
+- 必须授予“使用情况访问”，否则只能看电量，前台应用会显示“系统桌面”或旧应用。
+- Android 11+ 需要应用可见性；本项目已加 `<queries>`。如果自行改包，注意不要删掉。
+- vivo / OPPO / 小米的省电策略会杀后台：允许自启动、后台运行、关闭电池优化。
+- 手机和平板必须使用不同的设备 ID（`phone` / `tablet`），否则会互相覆盖。
+- 旧版 Android 包名是 `com.kayi.xiaotianstatus`，新版是 `com.kayi.mystatus`，不能覆盖安装；需要卸载旧版再装新版，旧数据会丢失。
+
+### 11.4 手表没有数据
+
+- 手表没有独立公网时，需要手机蓝牙网络代理或 Wi-Fi；否则上报会一直失败。
+- OPPO Watch 的 `BODY_SENSORS` 可能被固件限制，第三方 App 读不到心率/血氧；这种情况只能走 OPPO 健康 ADB 桥。
+- 手表 App 没有服务器地址输入框，地址是编译进 APK 的；换服务器要重新构建/安装。
+- 手表只保证上报电量、步数、在线状态；HR/SpO2 需要额外桥接。
+- 手表时间、时区不正确会导致“今天”的步数和日程错位。
+
+### 11.5 电脑一直显示“在电脑旁”或前台是 PowerShell
+
+- PC Agent 以计划任务运行时可能短暂抢焦点；使用项目里的隐藏 VBS 启动器。
+- 不要以 SYSTEM 运行 Edge/Chrome 截图；Windows 上截图任务要用 Administrator 的 S4U/交互任务。
+- 云端部署时 `localPc` 必须是 `false`，否则服务器会把自己的虚拟机当成你的电脑。
+- PC Agent 的 `Server` / `Token` 必须和当前服务一致。
+- 电脑休眠、锁屏、断网时，在线状态会延迟。
+
+### 11.6 状态卡空白、中文方框、截图失败
+
+- 确认 Chrome / Edge 路径正确；Linux 需要 `chromium` 和 `fonts-noto-cjk`。
+- Windows Server 默认可能没有微软雅黑，安装 Noto Sans CJK 或确认 SimSun 可用。
+- Docker 里 Chromium 需要 `--no-sandbox`，并保证字体包已安装。
+- Chrome 用户数据目录必须可写；不要放到只读目录。
+- 截图超时通常是首次启动 Chrome 太慢，重试一次；持续失败看 `data/server.log`。
+
+### 11.7 日程不显示 / 周次不对
+
+- `day` 是 1=周一 … 7=周日；不要写成 0。
+- 时间必须是 `HH:MM`，且 `end` 要大于 `start`；跨午夜暂不支持。
+- 周次需要 `semesterStart`（第 1 周周一）和每条日程的 `weeks`，否则会按每周重复。
+- 日程最多显示 3 条，更多会显示“还有 N 项安排”。
+- 时区默认 `Asia/Shanghai`；设备时区不同会错位。
+
+### 11.8 IP 属地 / 天气不对
+
+- 默认取云服务器 IP；云端部署后应使用手机上报 IP 定位。
+- 手机走 VPN / 代理时，IP 属地会变成代理所在地。
+- 手机长时间不上报时，会保留最后一次位置；这不是实时 GPS。
+- ip-api / ipinfo 有限流；失败时会退回缓存或默认位置。
+
+### 11.9 云端 / HTTPS 问题
+
+- 云端 `config.json` 必须 `localPc: false`，电脑状态由 PC Agent 上报。
+- 腾讯云安全组要放行 80/443；Windows 防火墙也要放行。
+- Caddy 的 `DOMAIN` 未设置时只会走 HTTP；域名需要 DNS 和备案（大陆服务器）。
+- 只开 HTTP 时不要公开发布令牌；HTTP 下数据不加密。
+- Caddy 反代要保留 `X-Forwarded-For`，否则手机 IP 定位会拿到 127.0.0.1。
+
+### 11.10 DSH 插件问题
+
+- 新版插件 ID 是 `@local/my-status`，不是旧的 `@local/xiaotian-status`；旧 profile 要重装插件。
+- `serverUrl` / `token` 是占位符，必须改成自己的地址和令牌。
+- 改 `triggerName` 后要重载插件或重启 DSH；默认仍是 `查hanser`。
+- 服务器 headless 缺 `DEEPSEEK_API_KEY` 会报 `MISSING_CREDENTIAL`。
+- Windows PowerShell 5.1 读取无 BOM 的 UTF-8 脚本会把中文变乱码；包含中文的脚本保存为 UTF-8 BOM。
+- 插件现在从云端下载 `/status.png`，不再假设图片在本机路径。
+
+### 11.11 升级 / 数据
+
+- `config.json`、`data/`、`dist/status.png` 不应提交到 GitHub。
+- 升级前备份 `data/state.json` 和 `data/health`。
+- 卸载 Android App 会清掉 SharedPreferences（服务器地址、令牌、设备 ID）。
+- 换包名（`com.kayi.xiaotianstatus` → `com.kayi.mystatus`）不能热升级，需要卸载重装。
+- 换令牌后旧 APK / 旧插件会 403，需要同步更新。
+
+### 11.12 安全底线
+
+- 不要把 17890 直接暴露公网；用 Caddy / 反向代理和 HTTPS。
+- 不要把带 token 的链接发到公开群；token 在 URL 中会进入浏览器历史和日志。
+- 不要提交 `.env`、`config.json`、APK、签名文件或真实服务器 IP。
+- 生产环境建议给 `/api/*` 加访问频率限制，并定期轮换 token。
