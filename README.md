@@ -106,11 +106,13 @@ adb install -r dist\我的状态.apk
 
 > 电脑 IP 变了怎么办？在电脑上运行 `ipconfig`，找到“以太网 / WLAN”的 IPv4 地址，改 App 里的地址即可。令牌在 `config.json` 的 `token` 字段。
 
-### 第三步：在 DSH 里输入“查hanser”
+### 第三步：在 DSH 里输入触发词
 
 插件已经安装：`@local/my-status`。
 
-直接发送：
+默认触发词是 **查hanser**。如果你在 DSH profile 里改了 `triggerName`，就发送对应的 **查<触发词>**。
+
+直接发送默认口令：
 
 ```
 查hanser
