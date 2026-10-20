@@ -1,0 +1,41 @@
+{
+  "name": "我的状态",
+  "subject": "他",
+  "port": 17890,
+  "bind": "0.0.0.0",
+  "token": "CHANGE_ME_TO_A_LONG_RANDOM_TOKEN",
+  "localPc": false,
+  "timezone": "Asia/Shanghai",
+  "secondaryTimezone": "Asia/Hong_Kong",
+  "secondaryTimeLabel": "中国时间",
+  "location": {
+    "mode": "auto",
+    "city": "",
+    "lat": null,
+    "lon": null,
+    "label": ""
+  },
+  "weather": {
+    "enabled": true
+  },
+  "schedule": [],
+  "wecomKf": {
+    "enabled": false,
+    "corpId": "",
+    "secret": "",
+    "token": "",
+    "encodingAESKey": "",
+    "openKfId": "",
+    "allowUsers": []
+  },
+  "snapshot": {
+    "width": 440,
+    "scale": 2,
+    "height": 1360,
+    "chromePath": "/usr/bin/chromium"
+  },
+  "privacy": {
+    "showCity": true,
+    "showWindowTitle": true
+  }
+}

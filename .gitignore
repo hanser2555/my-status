@@ -1,0 +1,34 @@
+# local runtime data
+config.json
+data/*
+!data/.gitkeep
+dist/*
+!dist/.gitkeep
+!dist/preview-demo.png
+backups/
+tmp-cloud/
+tmp-adb/
+
+# secrets
+.env
+*.pem
+*.key
+android/debug.keystore
+
+# build output
+android/build/
+tools/
+cloud-deploy/
+windows-cloud/
+
+# binaries / local assets
+caddy.exe
+caddy-download.bin
+*.otf
+*.ttf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

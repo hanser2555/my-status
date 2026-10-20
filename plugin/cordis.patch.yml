@@ -1,0 +1,8 @@
+- insert:
+    - id: xiaotian-status
+      name: '@local/xiaotian-status'
+      config:
+        serverUrl: http://YOUR_SERVER_IP
+        token: CHANGE_ME_TOKEN
+        autoStart: false
+        serverScript: C:/path/to/my-status/server/server.js

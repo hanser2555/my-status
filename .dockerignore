@@ -1,0 +1,9 @@
+node_modules
+.git
+data
+dist
+tools
+android
+plugin
+*.log
+*.png

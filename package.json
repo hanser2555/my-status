@@ -1,0 +1,12 @@
+{
+  "name": "my-status",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "我的状态 — 多设备状态汇总与状态卡片生成",
+  "scripts": {
+    "start": "node server/server.js",
+    "demo": "node scripts/demo.js",
+    "snapshot": "node scripts/snapshot.js"
+  }
+}
