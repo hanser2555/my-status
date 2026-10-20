@@ -98,11 +98,11 @@ export function apply(ctx, rawConfig = {}) {
     text: [
       '<hanser-status>',
       `“${trigger}”是用户给自己状态卡设置的快捷口令。`,
-      `当用户只发送“${trigger}”“查一下${triggerName}”“${triggerName}在干嘛”，或明确要求查看 ${triggerName} 当前在做什么、手机/平板/电脑/手表状态时：`,
+      `当用户只发送“${trigger}”“查一下${triggerName}”“${triggerName}在干嘛”，或明确要求查看${triggerName}当前在做什么、手机/平板/电脑/手表状态时：`,
       '- 必须调用 chahanser 工具，不要先追问，也不要只用文字回答。',
       '- 工具会返回一张已经排版好的状态卡图片。回复时用 1–2 句话概括推断结果，并保留图片。',
       '- 如果工具报错，告诉用户状态服务没有启动，并给出启动命令。',
-      `与 ${triggerName} 状态无关的请求不要调用此工具。`,
+      `与${triggerName}状态无关的请求不要调用此工具。`,
       '</hanser-status>',
     ].join('\n'),
   }), 'xiaotian-status: trigger');
