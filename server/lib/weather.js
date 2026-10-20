@@ -36,7 +36,7 @@ function localizePlace(city, region) {
 async function fetchJson(url, timeoutMs = 8000) {
   const response = await fetch(url, {
     signal: AbortSignal.timeout(timeoutMs),
-    headers: { 'user-agent': 'xiaotian-status/1.0 (personal dashboard)' },
+    headers: { 'user-agent': 'my-status/1.0 (personal dashboard)' },
   });
   if (!response.ok) throw new Error(`${url} -> HTTP ${response.status}`);
   return response.json();

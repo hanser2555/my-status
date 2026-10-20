@@ -1,4 +1,4 @@
-package com.kayi.xiaotianstatus;
+package com.kayi.mystatus;
 
 import android.content.Context;
 import android.content.SharedPreferences;

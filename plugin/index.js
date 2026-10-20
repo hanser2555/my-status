@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 
-export const name = 'xiaotian-status';
+export const name = 'my-status';
 export const inject = ['tools', 'systemPrompt'];
 
 const DEFAULTS = {
@@ -30,7 +30,7 @@ export function apply(ctx, rawConfig = {}) {
   function log(level, message) {
     const logger = ctx.logger;
     if (logger && typeof logger[level] === 'function') logger[level](message);
-    else if (level === 'error') console.error('[xiaotian-status]', message);
+    else if (level === 'error') console.error('[my-status]', message);
   }
 
   async function healthy(timeoutMs = 1500) {
@@ -87,12 +87,12 @@ export function apply(ctx, rawConfig = {}) {
     return attachments.saveImage({
       data: new Uint8Array(data),
       mediaType: 'image/png',
-      name: 'xiaotian-status.png',
+      name: 'my-status.png',
     });
   }
 
   ctx.effect(() => ctx.systemPrompt.section({
-    name: 'xiaotian-status:trigger',
+    name: 'my-status:trigger',
     order: 3300,
     interpolate: false,
     text: [
@@ -105,7 +105,7 @@ export function apply(ctx, rawConfig = {}) {
       `与${triggerName}状态无关的请求不要调用此工具。`,
       '</hanser-status>',
     ].join('\n'),
-  }), 'xiaotian-status: trigger');
+  }), 'my-status: trigger');
 
   ctx.effect(() => ctx.tools.register({
     name: 'chahanser',
@@ -168,5 +168,5 @@ export function apply(ctx, rawConfig = {}) {
         ...(image ? { image } : {}),
       };
     },
-  }), 'xiaotian-status: tool');
+  }), 'my-status: tool');
 }

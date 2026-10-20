@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kayi.xiaotianstatus">
+    package="com.kayi.mystatus">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -71,7 +71,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.kayi.xiaotianstatus.HEALTH" />
+                <action android:name="com.kayi.mystatus.HEALTH" />
             </intent-filter>
         </receiver>
     </application>

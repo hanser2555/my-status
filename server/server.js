@@ -326,7 +326,7 @@ const server = http.createServer(async (req, res) => {
         try {
           await updatePhoneLocation(clientIp(req));
         } catch (error) {
-          console.warn('[xiaotian-status] phone location unavailable:', error.message);
+          console.warn('[my-status] phone location unavailable:', error.message);
         }
       }
       const device = await store.ingestReport(payload, config);
@@ -418,7 +418,7 @@ const server = http.createServer(async (req, res) => {
 
     return sendText(res, 404, 'not found');
   } catch (error) {
-    console.error('[xiaotian-status]', error);
+    console.error('[my-status]', error);
     return sendJson(res, 500, { ok: false, error: String(error.message) });
   }
 });
@@ -456,25 +456,25 @@ async function bootstrap() {
     const fresh = await refreshWeather(config, phoneLocation);
     if (fresh) weather = fresh;
   } catch (error) {
-    console.warn('[xiaotian-status] weather unavailable:', error.message);
+    console.warn('[my-status] weather unavailable:', error.message);
   }
   if (config.localPc) {
     try {
       await collectPc({ force: true });
     } catch (error) {
-      console.warn('[xiaotian-status] pc collector unavailable:', error.message);
+      console.warn('[my-status] pc collector unavailable:', error.message);
     }
   }
 
   server.listen(config.port, config.bind, () => {
     const lan = lanAddresses();
-    console.log(`[xiaotian-status] ${config.name}在干嘛`);
-    console.log(`[xiaotian-status] local:  http://127.0.0.1:${config.port}/?token=${config.token}`);
+    console.log(`[my-status] ${config.name}在干嘛`);
+    console.log(`[my-status] local:  http://127.0.0.1:${config.port}/?token=${config.token}`);
     for (const entry of lan) {
-      console.log(`[xiaotian-status] LAN:    http://${entry.address}:${config.port}/?token=${config.token}  (${entry.name})`);
+      console.log(`[my-status] LAN:    http://${entry.address}:${config.port}/?token=${config.token}  (${entry.name})`);
     }
-    console.log(`[xiaotian-status] device report endpoint: http://<this-pc>:${config.port}/api/report`);
-    console.log(`[xiaotian-status] token: ${config.token}`);
+    console.log(`[my-status] device report endpoint: http://<this-pc>:${config.port}/api/report`);
+    console.log(`[my-status] token: ${config.token}`);
   });
 
   if (config.localPc) {
@@ -491,7 +491,7 @@ async function bootstrap() {
 bootstrap();
 
 function shutdown() {
-  console.log('[xiaotian-status] shutting down');
+  console.log('[my-status] shutting down');
   server.close(() => process.exit(0));
   setTimeout(() => process.exit(0), 3000).unref();
 }

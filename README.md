@@ -13,11 +13,11 @@
 
 ## 自定义口令
 
-默认口令是 **查hanser**。在 DSH profile 的 `xiaotian-status` 配置里改 `triggerName` 即可：
+默认口令是 **查hanser**。在 DSH profile 的 `my-status` 配置里改 `triggerName` 即可：
 
 ```yaml
-- id: xiaotian-status
-  name: '@local/xiaotian-status'
+- id: my-status
+  name: '@local/my-status'
   config:
     triggerName: 小明
 ```
@@ -108,7 +108,7 @@ adb install -r dist\我的状态.apk
 
 ### 第三步：在 DSH 里输入“查hanser”
 
-插件已经安装：`@local/xiaotian-status`。
+插件已经安装：`@local/my-status`。
 
 直接发送：
 
@@ -150,7 +150,7 @@ App 会扫描蓝牙名称包含 `OPPO`（可改）或广播了标准 Heart Rate 
 
 ```bash
 adb shell am broadcast \
-  -a com.kayi.xiaotianstatus.HEALTH \
+  -a com.kayi.mystatus.HEALTH \
   --es token CHANGE_ME_TOKEN \
   --ei hr 72 --ei spo2 98 --ei battery 76
 ```

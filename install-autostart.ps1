@@ -2,7 +2,7 @@ param([switch]$Remove)
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $startup = [Environment]::GetFolderPath('Startup')
-$link = Join-Path $startup 'XiaotianStatus.lnk'
+$link = Join-Path $startup 'MyStatus.lnk'
 
 if ($Remove) {
     if (Test-Path $link) { Remove-Item $link -Force }

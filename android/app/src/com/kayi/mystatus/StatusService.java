@@ -1,4 +1,4 @@
-package com.kayi.xiaotianstatus;
+package com.kayi.mystatus;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StatusService extends Service {
     private static final String TAG = "XtStatusService";
-    private static final String CHANNEL = "xiaotian_status";
-    public static final String ACTION_REPORT = "com.kayi.xiaotianstatus.REPORT";
+    private static final String CHANNEL = "my_status";
+    public static final String ACTION_REPORT = "com.kayi.mystatus.REPORT";
     public static volatile String lastMessage = "尚未上报";
     public static volatile long lastSuccessAt = 0L;
 

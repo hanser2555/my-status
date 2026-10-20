@@ -1,4 +1,4 @@
-package com.kayi.xiaotianstatus;
+package com.kayi.mystatus;
 
 import android.Manifest;
 import android.app.Activity;
@@ -91,7 +91,7 @@ public class MainActivity extends Activity {
         scroll.addView(root);
         setContentView(scroll);
 
-        TextView brand = text("✦  XIAOTIAN STATUS  /  DEVICE AGENT", 9, ACCENT, true);
+        TextView brand = text("✦  MY STATUS  /  DEVICE AGENT", 9, ACCENT, true);
         brand.setLetterSpacing(0.22f);
         root.addView(brand);
 
@@ -165,7 +165,7 @@ public class MainActivity extends Activity {
         watchInput = input("OPPO", InputType.TYPE_CLASS_TEXT);
         watchCard.addView(watchInput);
         TextView watchHint = text("OPPO Watch 若没有开放标准 GATT 心率服务，可让 OPPO 健康 / 自动化 App 通过广播把心率、血氧推给本应用：\n"
-                + "adb shell am broadcast -a com.kayi.xiaotianstatus.HEALTH --es token <令牌> --ei hr 72 --ei spo2 98", 9, MUTED, false);
+                + "adb shell am broadcast -a com.kayi.mystatus.HEALTH --es token <令牌> --ei hr 72 --ei spo2 98", 9, MUTED, false);
         watchHint.setLineSpacing(dp(3), 1f);
         watchHint.setPadding(0, dp(7), 0, 0);
         watchCard.addView(watchHint);

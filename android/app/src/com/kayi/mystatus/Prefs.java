@@ -1,11 +1,11 @@
-package com.kayi.xiaotianstatus;
+package com.kayi.mystatus;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 public final class Prefs {
-    private static final String FILE = "xiaotian_status";
+    private static final String FILE = "my_status";
     public static final String DEFAULT_SERVER = "http://YOUR_SERVER_IP";
     public static final String DEFAULT_TOKEN = "CHANGE_ME_TOKEN";
 

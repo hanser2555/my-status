@@ -1,6 +1,6 @@
 - insert:
-    - id: xiaotian-status
-      name: '@local/xiaotian-status'
+    - id: my-status
+      name: '@local/my-status'
       config:
         serverUrl: http://YOUR_SERVER_IP
         token: CHANGE_ME_TOKEN

@@ -6,7 +6,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$taskName = 'XiaotianPcAgent'
+$taskName = 'MyStatusPcAgent'
 $launcher = Join-Path $PSScriptRoot 'scripts\pc-agent-hidden.vbs'
 $configPath = Join-Path $PSScriptRoot 'config.json'
 
