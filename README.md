@@ -1,46 +1,139 @@
+<div align="center">
+
 # 他在干嘛 · 我的状态
 
-把 **手机、平板、电脑、手表** 的实时状态汇总成一张暗紫色状态卡，并推断“他现在在干什么”。
+把 **手机、平板、电脑、手表** 的实时状态，汇总成一张暗紫色状态卡。
 
-在 DeepSeek Harness 里直接输入 **查hanser**，就会调用 `chahanser` 工具，生成并显示一张可保存、可转发的 PNG。
+在 DeepSeek Harness 里输入 **查hanser**，调用 `chahanser` 工具，生成一张可保存、可转发的 PNG。
 
-> 想把它搬到腾讯云，让手机/平板在外面也能直接上报：见 [腾讯云部署指南](docs/tencent-cloud.md)。云上部署需要把 `localPc` 设为 `false`，并在 Windows 上运行 PC Agent。
+![Node](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white&style=flat-square)
+![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white&style=flat-square)
+![DSH](https://img.shields.io/badge/DeepSeek%20Harness-plugin-6C5CE7?style=flat-square)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white&style=flat-square)
 
-> **GitHub 版本说明**：仓库中已移除真实令牌、服务器 IP、个人日程和设备数据。首次运行请把 `config.example.json` 复制为 `config.json`，并修改 `token`；APK 需要用 `android/build.ps1` 自行构建，生成 `dist/我的状态.apk`。
-![状态卡预览](dist/preview-demo.png)
+[快速开始](#2-三步用起来) · [工作原理](#1-它是怎么工作的) · [DSH 插件](#4-dsh-插件) · [常见问题](#11-别人使用时可能遇到的-bug-与解决)
 
-> 上面的预览使用了演示设备数据和示例日程，用来展示完整排版；安装 APK 后会自动替换成你的真实设备数据。`dist/status.png` 始终是最新一次真实状态。
+</div>
 
-## 自定义口令
+<p align="center">
+  <img src="dist/preview-demo.png" width="360" alt="状态卡预览">
+</p>
 
-默认口令是 **查hanser**。在 DSH profile 的 `my-status` 配置里改 `triggerName` 即可：
+> 预览使用演示设备数据和示例日程；安装 APK 后会自动替换成真实数据，`dist/status.png` 始终是最新状态卡。
+
+<details>
+<summary><b>GitHub 版本说明</b>：已移除真实令牌、服务器 IP、个人日程和设备数据</summary>
+
+首次运行：
+
+```powershell
+Copy-Item config.example.json config.json
+# 修改 config.json 里的 token
+```
+
+APK 需要用 `android/build.ps1` 自行构建，输出 `dist/我的状态.apk`。
+
+</details>
+
+---
+
+## 目录
+
+**开始使用**
+
+- [能做什么](#能做什么)
+- [1. 它是怎么工作的](#1-它是怎么工作的)
+- [2. 三步用起来](#2-三步用起来)
+- [3. 手表数据怎么接](#3-手表数据怎么接)
+- [4. DSH 插件](#4-dsh-插件)
+
+**进阶**
+
+- [5. 电脑端状态](#5-电脑端状态)
+- [6. 日程](#6-日程)
+- [7. 命令与 API](#7-命令与-api)
+- [8. 隐私与安全](#8-隐私与安全)
+
+**参考**
+
+- [9. 目录结构](#9-目录结构)
+- [10. 已知限制](#10-已知限制)
+- [11. 别人使用时可能遇到的 Bug 与解决](#11-别人使用时可能遇到的-bug-与解决)
+
+---
+
+## 能做什么
+
+| 设备 | 采集内容 |
+|---|---|
+| 手机 / 平板 | 前台应用、电量、充电状态、步数、网络、存储 |
+| Windows 电脑 | 前台窗口、键鼠活跃、CPU / 内存、在线状态 |
+| OPPO Watch | 心率、血氧、电量、步数；支持 ADB 健康桥 |
+| 云端 | 多设备汇总、IP 属地 / 天气、周课表、状态卡截图 |
+
+核心能力：
+
+- **规则推断**：根据设备状态、前台应用、时间、课表和心率推断“他现在在干什么”
+- **一张图分享**：暗紫色卡片，手机 / 平板 / 电脑 / 手表状态一屏展示
+- **多种入口**：本机网页、手机浏览器、DSH 的 `chahanser` 工具、微信客服（可选）
+- **本地优先**：默认数据只保存在本机 `data/`，不依赖第三方云
+
+<details>
+<summary><b>自定义触发词</b>（默认 <code>查hanser</code>）</summary>
+
+在 DSH profile 的 `my-status` 配置里修改：
 
 ```yaml
 - id: my-status
   name: '@local/my-status'
   config:
     triggerName: 小明
-改后口令变成 **查小明**，工具名仍然是 `chahanser`，不需要改代码。修改后重载插件或重启 DSH。
+```
+
+默认：
+
+```text
+查hanser
+```
+
+改成 `triggerName: 小明` 后：
+
+```text
+查小明
+```
+
+工具名仍然是 `chahanser`，不需要改代码。修改后重载插件或重启 DSH。
+
+</details>
+
 ---
 
 ## 1. 它是怎么工作的
 
-Android 手机 / 平板 ─┐
-OPPO Watch ─ BLE ────┤   HTTP POST /api/report        ┌─ 电脑采集器（前台窗口 / 电量 / 键鼠）
-                     ├───────────────────────────────► │
-Health Connect / 自动化广播 ─┘    本机 Node 服务        └─ 天气 / IP 属地 / 日程
-                                                          │
-                                                          ▼
-                                              规则推断 + HTML 状态卡
-                                                          │
-                                                          ▼
-                                              Chromium 截图 → PNG
-                                                          │
-                                                          ▼
-                                      DSH「查hanser」工具 / 手机浏览器
-- 所有数据只保存在这台电脑的 `data/` 目录里。
-- 手机与电脑需要在同一个 Wi-Fi / 局域网。
-- 服务默认监听 `0.0.0.0:17890`，用令牌保护。外网无法直接访问，除非你自己做端口映射。
+```text
+手机 / 平板 ─┐
+OPPO Watch ──┼── HTTP POST /api/report ──┐
+Windows PC ──┘                          │
+                                        ▼
+                                  Node 状态服务
+                                   ├─ 设备数据
+                                   ├─ 天气 / IP 属地
+                                   ├─ 周课表
+                                   └─ 规则推断
+                                        │
+                                        ▼
+                                  HTML 状态卡
+                                        │
+                                        ▼
+                               Chromium → PNG
+                                        │
+                        网页 / 手机 / DSH / 微信客服
+```
+
+- 默认数据保存在本机 `data/`。
+- 手机与电脑需要处于同一 WiFi / 局域网。
+- 服务默认监听 `0.0.0.0:17890`，用 token 保护。
+- 外网访问建议用 Caddy / 反向代理，不要直接暴露 17890。
 
 ---
 
@@ -49,29 +142,49 @@ Health Connect / 自动化广播 ─┘    本机 Node 服务        └─ 天�
 ### 第一步：启动电脑端服务
 
 ```powershell
-cd C:\path\to\my-status
+Copy-Item config.example.json config.json
+# 编辑 config.json，至少修改 token
 .\start.ps1
-看到 `我的状态服务已启动` 即可。也可以直接：
+```
+
+看到 `我的状态服务已启动` 即可。
+
+也可以直接运行：
 
 ```powershell
 node server/server.js
-想开机自动启动：
+```
+
+开机自启：
 
 ```powershell
 .\install-autostart.ps1
 # 取消：.\install-autostart.ps1 -Remove
+```
+
 ### 第二步：给手机 / 平板安装 APK
 
 APK 位置：
 
+```text
 dist\我的状态.apk
-安装方式任选：
+```
 
-- 把 APK 发到手机（微信文件传输 / 数据线 / 网盘），点击安装；
-- 或电脑连上手机后：
+构建方式：
 
 ```powershell
-adb install -r dist\我的状态.apk
+cd android
+.\build.ps1
+```
+
+安装方式：
+
+```powershell
+adb install -r ..\dist\我的状态.apk
+```
+
+也可以把 APK 发到手机（微信文件传输 / 数据线 / 网盘）点击安装。
+
 打开 App 后填写：
 
 | 字段 | 手机 | 平板 |
@@ -79,65 +192,52 @@ adb install -r dist\我的状态.apk
 | 电脑地址 | `http://192.168.1.100:17890` | 同左 |
 | 访问令牌 | `CHANGE_ME_TOKEN` | 同左 |
 | 设备 ID | `phone` | `tablet` |
-| 显示名称 | 手机 | 平板 |
 | 设备类型 | 手机 | 平板 |
 
-点 **保存并启动自动上报**，再按顺序授权：
+点 **保存并启动自动上报**，再授权：
 
-1. **使用情况访问**：读取当前前台 App（不授权也能上报电量，但看不到 App）。
-2. **通知 / 活动识别 / 蓝牙权限**：通知用于常驻服务，活动识别用于计步，蓝牙用于直连手表。
-3. 如果系统弹出“忽略电池优化”，建议允许，否则后台可能被省电策略杀掉。
+1. **使用情况访问**：读取前台 App（不授权也能上报电量）。
+2. **通知 / 活动识别 / 蓝牙**：常驻通知、计步、手表连接。
+3. 如果系统提示“忽略电池优化”，建议允许。
 
-> 电脑 IP 变了怎么办？在电脑上运行 `ipconfig`，找到“以太网 / WLAN”的 IPv4 地址，改 App 里的地址即可。令牌在 `config.json` 的 `token` 字段。
+> 电脑 IP 变了怎么办？在电脑运行 `ipconfig`，找到“以太网 / WLAN”的 IPv4 地址，改 App 里的地址即可。令牌在 `config.json` 的 `token` 字段。
 
 ### 第三步：在 DSH 里输入触发词
 
-插件已经安装：`@local/my-status`。
+插件安装为 `@local/my-status`。
 
-默认触发词是 **查hanser**。如果你在 DSH profile 里改了 `triggerName`，就发送对应的 **查<触发词>**。
+默认触发词是 **查hanser**；如果 profile 里改了 `triggerName`，就发送对应的 **查<触发词>**。
 
-直接发送默认口令：
-
+```text
 查hanser
+```
+
 DSH 会调用 `chahanser` 工具，返回推断结果 + 状态卡图片。
-
-如果只是想在手机浏览器里看：
-
-http://192.168.1.100:17890/?token=CHANGE_ME_TOKEN
-页面每 60 秒自动刷新。
 
 ---
 
 ## 3. 手表数据怎么接
 
-OPPO Watch 的数据路径按优先级有三种：
+### A. 标准 BLE 心率 / 血氧
 
-### A. 标准 BLE 心率 / 血氧（App 内置，自动尝试）
+App 会尝试连接标准 GATT 心率服务。适合开放标准服务的手表。
 
-App 会扫描蓝牙名称包含 `OPPO`（可改）或广播了标准 Heart Rate Service 的设备，连接后订阅：
+> 很多 ColorOS Watch 连接 OPPO 健康后不会广播标准 GATT，这时扫描不到是正常的，继续用 B / C / D。
 
-- Heart Rate Service `0x180D` / Measurement `0x2A37`
-- Pulse Oximeter Service `0x1822` / Measurement `0x2A5E`
-- Battery Service `0x180F` / Level `0x2A19`
+### B. 自动化广播
 
-如果 OPPO Watch 对第三方 App 开放了这些标准 GATT 服务，就能直接拿到心率、血氧、手表电量。
-
-> 注意：不少 ColorOS Watch 手表在连接 OPPO 健康后不会对外广播标准 GATT。这种情况下 App 会显示扫描不到，继续用下面的 B。
-
-### B. 自动化广播（推荐给不开放 GATT 的手表）
-
-任何能发 Android 广播的自动化 App（MacroDroid、Tasker、自写脚本）都可以推送：
+MacroDroid、Tasker 或自写脚本可以发送：
 
 ```bash
 adb shell am broadcast \
   -a com.kayi.mystatus.HEALTH \
   --es token CHANGE_ME_TOKEN \
   --ei hr 72 --ei spo2 98 --ei battery 76
+```
+
 收到广播后，App 会更新手表卡片并立即上报。`battery` 可省略。
 
 ### C. HTTP 直推
-
-如果自动化工具能发 HTTP 请求，直接 POST：
 
 ```http
 POST http://192.168.1.100:17890/api/report/health
@@ -145,30 +245,25 @@ x-xt-token: CHANGE_ME_TOKEN
 Content-Type: application/json
 
 {"hr":72,"spo2":98,"battery":76,"source":"OPPO Health"}
-这条路径完全不经过手机 App，适合用 Tasker / MacroDroid / 快捷指令读取 OPPO 健康通知后转发；`battery` 可省略。收到后会自动生成/更新手表卡片。
+```
 
-电脑上也可以直接用脚本测试或手动补数据：
+适合用 Tasker / MacroDroid / 快捷指令读取 OPPO 健康通知后转发。
+
+电脑上也可以手动测试：
 
 ```powershell
 .\scripts\push-health.ps1 -Hr 72 -Spo2 98 -Battery 76
-MacroDroid 的做法：
+```
 
-1. 新建宏，触发选“定时器 / 间隔”或“收到通知”（选择 OPPO 健康）。
-2. 动作选 **HTTP Request / Web Request**。
-3. Method 选 `POST`。
-4. URL 填 `http://192.168.1.100:17890/api/report/health`。
-5. Header 加 `x-xt-token: CHANGE_ME_TOKEN`，Content-Type 用 `application/json`。
-6. Body 填 `{"hr":72,"spo2":98,"battery":76,"source":"OPPO Watch"}`，其中数值可以换成 MacroDroid 变量。
+### D. ADB 读取 OPPO 健康
 
-> 目前没有公开的 OPPO Health 云端 API。HTTP 推送只负责“把数据送进状态服务”，数据本身仍需从 OPPO 健康通知、Health Connect 或 BLE 读取；如果 OPPO 健康支持把数据写入 Health Connect，再用支持 Health Connect 的自动化 App 转发即可。
-
-### D. ADB 读取 OPPO 健康（当前 OPPO Watch 4 Pro 可用）
-
-OPPO Watch 4 Pro 在 `dumpsys bluetooth_manager` 里是经典蓝牙 HEADSET/SPP 连接，不对外广播标准 BLE 心率服务，所以 App 的 BLE 扫描连不上它。可以借用 USB ADB 读取 OPPO 健康首页：
+OPPO Watch 4 Pro 在 `dumpsys bluetooth_manager` 里是经典蓝牙 HEADSET/SPP，不对外广播标准 BLE 心率服务。
 
 ```powershell
 # 手机解锁、USB 调试已授权、OPPO 健康已登录并连着手表
 .\scripts\sync-oppo-health.ps1
+```
+
 脚本会：
 
 1. 打开 OPPO 健康；
@@ -180,37 +275,41 @@ OPPO Watch 4 Pro 在 `dumpsys bluetooth_manager` 里是经典蓝牙 HEADSET/SPP 
 
 ### E. 手表端 APK（实验）
 
-OPPO Watch 4 Pro（OWW221，Android 11）可以通过 ADB 安装同一个 APK。安装后会自动识别为手表：
-
-- 通过手表的蓝牙网络代理直接 POST 到电脑
-- 上报手表电量、在线状态、步数
-- 心率/血氧**不能**由第三方 App 直接读取：即使 `BODY_SENSORS` 显示已授权，SensorService 仍然拒绝
-- OPPO 的 `HealthKitProvider` 存在，`CHECK_AVAILABLE=true`、`CHECK_VERSION=2`，也能拉起心率/血氧授权页
-- 但 `READ_RECORDS` 会执行 `checkByWhiteList`：内置了 `包名 -> 签名 SHA-256` 白名单，第三方签名不在表里，授权后仍然返回 `authorized failed`
-- 因此手表端只能上报电量/在线/网络状态，不能直接读心率/血氧；除非拿到 OPPO HealthKit 的合作签名白名单
-
-因此目前采用混合方案：
-
-```text
-手表 APK  → 电量 / 在线 / 网络状态
-手机 ADB  → OPPO 健康里的心率 / 血氧 / 步数
-也可以走 Wi-Fi 无线 ADB，不需要插线：
+OPPO Watch 4 Pro（OWW221，Android 11）可以通过 ADB 安装同一个 APK：
 
 ```powershell
-adb tcpip 5555
-adb connect 192.168.1.101:5555
-.\scripts\sync-oppo-health.ps1 -Serial 192.168.1.101:5555
-手机重启或切换 Wi-Fi 后，重新执行 `adb connect`。不用时可以用 `adb usb` 关闭 TCP 调试端口。
+adb install -r dist\我的状态.apk
+```
+
+手表端只能稳定上报：
+
+- 电量
+- 在线状态
+- 网络状态
+- 步数
+
+心率 / 血氧**不能**由第三方 App 直接读取：即使 `BODY_SENSORS` 显示已授权，SensorService 仍会拒绝。OPPO 的 `HealthKitProvider` 有签名白名单，第三方签名不在表里，`READ_RECORDS` 会返回 `authorized failed`。
+
+因此推荐混合方案：
+
+```text
+手表 APK  → 电量 / 在线 / 网络 / 步数
+手机 ADB  → 心率 / 血氧 / 步数
+```
 
 ---
 
 ## 4. DSH 插件
 
-插件目录：`plugin/`
+插件目录：
+
+```text
+plugin/
+```
 
 - 工具名：`chahanser`
-- 触发：系统提示词里的 `<hanser-status>` 段，检测“查hanser / 查一下hanser / hanser在干嘛”
-- 输出：一段推断摘要 + 一张已经保存为 DSH attachment 的 PNG
+- 触发：系统提示词里的 `<hanser-status>` 段
+- 输出：推断摘要 + 已保存为 DSH attachment 的 PNG
 
 插件配置在 `plugin/cordis.patch.yml`：
 
@@ -218,13 +317,23 @@ adb connect 192.168.1.101:5555
 serverUrl: http://127.0.0.1:17890
 token: CHANGE_ME_TOKEN
 autoStart: true
-serverScript: C:/Users/.../my-status/server/server.js
-`autoStart: true` 表示 DSH 发现服务没启动时会自动拉起 Node 服务。
+triggerName: hanser
+serverScript: C:/path/to/my-status/server/server.js
+```
 
-重新安装插件（修改插件代码后）：
+- `autoStart: true`：DSH 发现服务没启动时自动拉起 Node。
+- 云端部署建议 `autoStart: false`，服务由 Docker / Caddy 管理。
+- `triggerName` 控制触发词，默认 `hanser`。
 
+重新安装插件：
+
+```text
 plugin_manager install_bundle
 target: C:\path\to\my-status\plugin
+```
+
+修改插件代码后，重载插件或重启 DSH。
+
 ---
 
 ## 5. 电脑端状态
@@ -233,17 +342,25 @@ target: C:\path\to\my-status\plugin
 
 - 前台窗口标题 / 进程名（VS Code、Edge、游戏、Office…）
 - 键鼠空闲秒数
-- 电池电量 / 是否充电 / 是否插电
+- 电池电量 / 充电状态
 - CPU、内存、开机时长、网卡、本机 IP
 - 是否锁屏
 
 如果前台是 DSH，会推断为“和 AI 写代码”；如果是浏览器视频页，会推断为“看视频”。
 
+云端模式：
+
+```json
+"localPc": false
+```
+
+电脑状态由 `scripts/pc-agent.ps1` 每分钟上报到云端。不要在云端把 `localPc` 设为 `true`，否则服务器会把自己的虚拟机当成你的电脑。
+
 ---
 
 ## 6. 日程
 
-`config.json` 的 `schedule` 是数组，例如：
+`config.json` 的 `schedule` 是数组：
 
 ```json
 [
@@ -251,28 +368,33 @@ target: C:\path\to\my-status\plugin
     "day": 1,
     "start": "10:00",
     "end": "11:00",
-    "title": "程序设计导论 1",
+    "title": "程序设计导论",
     "type": "答疑课",
-    "location": "Kilburn 2.25"
+    "location": "教学楼 A101"
   },
   {
     "days": [2, 4],
     "start": "14:00",
     "end": "15:00",
-    "title": "一年级团队项目",
+    "title": "团队项目",
     "type": "实验课",
-    "location": "Kilburn 1.8"
+    "location": "实验楼 302",
+    "weeks": [1, 19]
   }
 ]
-- `day`: 1=周一 … 7=周日；也可以写 `days: [1,3,5]`。
-- 当前时间落在某节课内，会优先推断为“上课”，置信度 90% 左右。
+```
+
+- `day`：1=周一 … 7=周日；也可以写 `days: [1,3,5]`。
+- `weeks`：`[开始周, 结束周]`，需要配合 `config.semesterStart`（第 1 周周一）。
+- 当前时间落在某节课内，会优先推断为“上课”。
 - 没有日程时显示“今天没有排课或日程 / 自由时间”。
+- 跨午夜暂不支持。
 
 修改 `config.json` 后重启服务。
 
 ---
 
-## 7. 常用命令
+## 7. 命令与 API
 
 ```powershell
 # 启动 / 检查服务
@@ -281,11 +403,13 @@ target: C:\path\to\my-status\plugin
 # 手动生成一张（真实数据）
 node scripts/snapshot.js
 
-# 生成一张演示卡（会写入演示设备数据，正式使用前建议 /api/clear）
+# 生成演示卡（会写入演示设备数据，正式使用前建议 /api/clear）
 node scripts/demo.js
 
 # 只启动服务
 node server/server.js
+```
+
 开发调试接口：
 
 | 方法 | 路径 | 说明 |
@@ -305,17 +429,18 @@ node server/server.js
 
 ## 8. 隐私与安全
 
-- 服务只监听局域网，所有上报需要令牌。
-- `data/state.json` 保存设备状态与最近 24 小时健康采样；`data/health` 只保留 24 小时。
-- 图片生成完全在本机 Chromium 里完成，不经过第三方服务。
-- 天气使用 Open-Meteo；IP 属地使用 ip-api / ipinfo。只发送公网 IP 请求，不发送设备数据。
-- 令牌会出现在 APK 默认值、插件配置和二维码链接里。不要把 `dist/status.png`、`config.json` 或 APK 发给不信任的人。
-- 想换令牌：修改 `config.json` 的 `token`，同步改 App 和 `plugin/cordis.patch.yml`，重启服务并重新安装插件。
+- 服务默认只监听局域网，所有上报需要 token。
+- `data/state.json` 保存设备状态与最近 24 小时健康采样。
+- 图片生成在本机 Chromium 完成，不经过第三方服务。
+- 天气使用 Open-Meteo；IP 属地使用 ip-api / ipinfo。
+- token 会出现在 APK 默认值、插件配置和二维码链接里，不要公开转发。
+- 换 token：修改 `config.json`，同步改 App 和插件，重启服务并重新安装插件。
 
 ---
 
 ## 9. 目录结构
 
+```text
 my-status/
 ├─ server/
 │  ├─ server.js              HTTP 服务 + 路由
@@ -334,21 +459,25 @@ my-status/
 │  └─ snapshot.js            真实数据出图
 ├─ android/                  Android 设备端源码 + build.ps1
 ├─ plugin/                   DSH 插件（chahanser 工具）
+├─ docs/                     腾讯云 / 微信客服文档
 ├─ dist/
-│  ├─ 我的状态.apk    手机 / 平板安装包
+│  ├─ 我的状态.apk           手机 / 平板安装包
 │  └─ status.png             最新状态卡
-├─ config.json              端口、令牌、日程、时区
+├─ config.json               端口、令牌、日程、时区
 └─ start.ps1                 启动服务
+```
+
 ---
 
 ## 10. 已知限制
 
-- 电脑端已在当前 Windows 机器上验证；Android APK 已通过编译和签名，但没有连接实体手机做运行时验证。
-- OPPO Watch 是否能直连标准 BLE 心率服务，取决于手表固件是否开放 GATT；不开放时用广播 / HTTP 桥接。
-- Android 后台常驻受厂商省电策略影响；建议在系统设置里允许“自启动 / 后台运行 / 不优化电池”。
-- 平板需要单独装 APK 并把设备 ID 改为 `tablet`，否则会和手机互相覆盖。
+- Windows 端已在当前环境验证；Android APK 已编译、签名并在手机上测试，部分厂商 ROM 仍需实测。
+- OPPO Watch 是否能直连标准 BLE 心率服务，取决于固件是否开放 GATT。
+- Android 后台常驻受厂商省电策略影响；建议允许自启动、后台运行、关闭电池优化。
+- 平板需要单独安装 APK 并把设备 ID 改为 `tablet`，否则会和手机互相覆盖。
 - 图片里的位置是 IP 属地（城市级），不是 GPS 精确定位。
 - 日程需要手动写进 `config.json`；没有接学校课表系统。
+
 ---
 
 ## 11. 别人使用时可能遇到的 Bug 与解决
