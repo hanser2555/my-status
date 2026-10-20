@@ -1,17 +1,24 @@
 <div align="center">
 
-# 他在干嘛 · 我的状态
+<h1>他在干嘛 · 我的状态</h1>
 
-把 **手机、平板、电脑、手表** 的实时状态，汇总成一张暗紫色状态卡。
+<p>把 <strong>手机、平板、电脑、手表</strong> 的实时状态，汇总成一张暗紫色状态卡。</p>
 
-在 DeepSeek Harness 里输入 **查hanser**，调用 `chahanser` 工具，生成一张可保存、可转发的 PNG。
+<p>在 DeepSeek Harness 里输入 <strong>查hanser</strong>，调用 <code>chahanser</code> 工具，生成一张可保存、可转发的 PNG。</p>
 
-![Node](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white&style=flat-square)
-![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white&style=flat-square)
-![DSH](https://img.shields.io/badge/DeepSeek%20Harness-plugin-6C5CE7?style=flat-square)
-![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white&style=flat-square)
+<p>
+  <img src="https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&amp;logoColor=white&amp;style=flat-square" alt="Node.js 22+">
+  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&amp;logoColor=white&amp;style=flat-square" alt="Android 8.0+">
+  <img src="https://img.shields.io/badge/DeepSeek%20Harness-plugin-6C5CE7?style=flat-square" alt="DSH plugin">
+  <img src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&amp;logoColor=white&amp;style=flat-square" alt="Docker">
+</p>
 
-[快速开始](#2-三步用起来) · [工作原理](#1-它是怎么工作的) · [DSH 插件](#4-dsh-插件) · [常见问题](#11-别人使用时可能遇到的-bug-与解决)
+<p>
+  <a href="#2-三步用起来">快速开始</a> ·
+  <a href="#1-它是怎么工作的">工作原理</a> ·
+  <a href="#4-dsh-插件">DSH 插件</a> ·
+  <a href="#11-别人使用时可能遇到的-bug-与解决">常见问题</a>
+</p>
 
 </div>
 
